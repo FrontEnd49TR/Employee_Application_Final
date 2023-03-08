@@ -2,7 +2,7 @@ import React, { ReactNode, useRef, useState } from 'react';
 import { Box, IconButton, List, ListItem, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { Employee } from '../../model/Employee';
-import { DataGrid, GridActionsCellItem, GridColumns } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid';
 import { Delete, Edit, PersonAdd } from '@mui/icons-material';
 import './table.css'
 import { employeesActions } from '../../redux/employees-slice';
@@ -12,7 +12,7 @@ export const Employees: React.FC = () => {
     const dispatch = useDispatch();
     const authUser = useSelector<any, string>(state => state.auth.authenticated);
     const editId = useRef<number>(0);
-    const columns = React.useRef<GridColumns>([
+    const columns = React.useRef<GridColDef[]>([
         {
             field: 'name', headerClassName: 'header', headerName: 'Employee Name',
             flex: 1, headerAlign: 'center', align: 'center'

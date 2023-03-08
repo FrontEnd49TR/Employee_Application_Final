@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import './pages/table.css'
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
     field: string;
     objects: any[];
 }
-const columns: GridColumns = [
+const columns: GridColDef[] = [
     {
         field: "minValue", headerName: "Minimal Value", headerAlign: "center",
         align: "center", headerClassName: "header", flex: 1
