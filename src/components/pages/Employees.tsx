@@ -34,7 +34,7 @@ export const Employees: React.FC = () => {
                 return authUser.includes('admin') ? [
                     <GridActionsCellItem label="remove" icon={<Delete />}
                         onClick={() => removeEmployee(+params.id)
-                            } />,
+                        } />,
                     <GridActionsCellItem label="update" icon={<Edit />}
                         onClick={() => {
                             editId.current = +params.id;
@@ -51,7 +51,7 @@ export const Employees: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const title = useRef<string>("");
     const content = useRef<string>("");
-    const confirmFn = useRef<(isOk: boolean)=>void>((isOK)=> {});
+    const confirmFn = useRef<(isOk: boolean) => void>((isOK) => { });
     const employees = useSelector<any, Employee[]>(state => state.company.employees);
     const idRemoved = useRef<number>(0);
     const employeeToUpdate = useRef<Employee>();
@@ -70,19 +70,19 @@ export const Employees: React.FC = () => {
         setOpen(false);
     }
     function actualUpdate(isOk: boolean) {
-        if(isOk) {
+        if (isOk) {
             dispatch(employeesActions.updateEmployee(employeeToUpdate.current));
         }
         setOpen(false);
     }
     function getComponent(): ReactNode {
         let res: ReactNode = <Box sx={{ height: "70vh", width: "80vw" }}>
-                <DataGrid columns={columns.current} rows={employees}/>
-                {authUser.includes("admin") && <IconButton onClick={() => setFlAdd(true)}><PersonAdd/></IconButton>}
+            <DataGrid columns={columns.current} rows={employees} />
+            {authUser.includes("admin") && <IconButton onClick={() => setFlAdd(true)}><PersonAdd /></IconButton>}
         </Box>
         if (flEdit) {
             res = <EmployeeForm submitFn={function (empl: Employee): boolean {
-                
+
                 title.current = "Update Employee object?";
                 content.current = `You are going update Employee ${empl.name}`;
                 employeeToUpdate.current = empl;
@@ -90,19 +90,19 @@ export const Employees: React.FC = () => {
                 setOpen(true);
                 setFlEdit(false);
                 return true;
-            } } employeeUpdate = {employees.find(empl => empl.id == editId.current)} />
+            }} employeeUpdate={employees.find(empl => empl.id == editId.current)} />
         } else if (flAdd) {
             res = <EmployeeForm submitFn={function (empl: Employee): boolean {
                 dispatch(employeesActions.addEmployee(empl));
                 setFlAdd(false);
                 return true;
-            } }/>
+            }} />
         }
         return res;
     }
     return <Box sx={{ height: "80vh", width: "80vw" }}>
         {getComponent()}
         <Confirmation confirmFn={confirmFn.current} open={open}
-         title={title.current} content={content.current}></Confirmation>
+            title={title.current} content={content.current}></Confirmation>
     </Box>
 }
