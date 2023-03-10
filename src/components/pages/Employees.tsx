@@ -19,7 +19,7 @@ export const Employees: React.FC = () => {
         },
         {
             field: 'birthDate', headerName: 'Date of Birth', flex: 1, headerClassName: 'header',
-            type: "date", headerAlign: 'center', align: 'center'
+            type: "string", headerAlign: 'center', align: 'center'
         },
         {
             field: 'department', headerName: 'Department', headerClassName: 'header',
