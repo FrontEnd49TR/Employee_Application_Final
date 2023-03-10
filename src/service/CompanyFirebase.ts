@@ -1,30 +1,25 @@
 import { Employee } from "../model/Employee";
 import employeeConfig from "../config/employee-config.json";
 import { getRandomNumber } from "../utils/random";
+import {app} from '../config/firebase-config';
+import {collection,  getFirestore, getDocs, setDoc, doc, deleteDoc} from 'firebase/firestore';
+const EMPLOYEES = "employees";
 export class CompanyFirebase {
-    private employees: Employee[] = [];
-    addEmployee(empl: Employee): void {
+    private employeesCol = collection(getFirestore(app), EMPLOYEES);
+    async addEmployee(empl: Employee): Promise<void> {
         empl.id = getRandomNumber(employeeConfig.minId, employeeConfig.maxId);
-        this.employees.push(empl);
+        this.updateEmployee(empl);
     }
-    updateEmployee(empl: Employee): void {
-        const index = this.employees.findIndex(e => e.id == empl.id);
-        
-        if (index >= 0 ) {
-           
-           this.employees[index] = empl;
-        }
+    async updateEmployee(empl: Employee): Promise<void> {
+        await setDoc(doc(this.employeesCol, empl.id.toString()), empl);
         
     }
-    getEmployee(id: number): Employee | null {
-        const index: number = this.employees.findIndex(e => e.id === id);
-        return index < 0 ? null : this.employees[index];
+    
+    async removeEmployee(id: number): Promise<void> {
+        await deleteDoc(doc(this.employeesCol, id.toString()));
     }
-    removeEmployee(id: number): void {
-        const index: number = this.employees.findIndex(e => e.id === id);
-        index >= 0 && this.employees.splice(index, 1) ;
-    }
-    getAllEmployees(): Employee[] {
-        return this.employees.slice();
+    async getAllEmployees(): Promise<Employee[]> {
+        const docsSnapshot = await getDocs(this.employeesCol);
+        return docsSnapshot.docs.map(doc => doc.data() as Employee);
     }
 }
