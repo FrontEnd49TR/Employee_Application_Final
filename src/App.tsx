@@ -40,7 +40,6 @@ function App() {
              subscription = company.getAllEmployees().subscribe({
                 next: (employees: Employee[]) => {
                     dispatch(setEmployees(employees));
-                    dispatch(codeActions.setCode("OK"));
                 },
                 error: (err: any) => {
                     dispatch(codeActions.setCode("Unknown Error"))
