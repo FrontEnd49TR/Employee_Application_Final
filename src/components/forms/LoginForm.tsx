@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LoginData } from '../../model/LoginData';
-import { Alert } from '@mui/material';
+import { Alert, Divider } from '@mui/material';
 import { CodeType } from '../../model/CodeType';
 
 function Copyright(props: any) {
@@ -96,7 +96,17 @@ export const LoginForm: React.FC<Props> = ({submitFn, code}) => {
               </Grid>
             </Grid>
           </Box>
-        </Box>
+          <Divider sx={{ width: "100%", fontWeight: "bold"}}>or</Divider>
+          <Button 
+           onClick={() =>
+            submitFn({ username: 'GOOGLE', password: '' })} fullWidth variant="outlined" 
+            sx={{mt: 2}}
+             >
+
+            <Avatar src="https://img.icons8.com/color/2x/google-logo.png" sx={{width:{xs: '6vh', sm: '6vw', lg: '3vw'}}}  />
+        </Button>
+          </Box>
+        
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
       

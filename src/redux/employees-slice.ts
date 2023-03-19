@@ -1,57 +1,87 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Employee } from '../model/Employee';
-import { Company } from '../service/Company';
 import { CompanyFirebase } from '../service/CompanyFirebase';
+import { codeActions } from './codeSlice';
 const company = new CompanyFirebase();
-const initialState: {employees: Employee[]} = {
+const initialState: { employees: Employee[] } = {
     employees: []
 }
 const employeesSlice = createSlice({
     initialState,
     name: "company",
     reducers: {
-       setEmployees: (state, data) => {
-        state.employees = data.payload;
-       }
+        setEmployees: (state, data) => {
+            state.employees = data.payload;
+        }
     }
 })
 
 export const employeesReducer = employeesSlice.reducer;
 const actions = employeesSlice.actions;
 export const employeesActions: any = {
-    addEmployee : (empl: Employee)=> {
+    addEmployee: (empl: Employee) => {
         return async (dispatch: any) => {
-            await company.addEmployee(empl);
-            const employees = await company.getAllEmployees();
-            dispatch(actions.setEmployees(employees));
+            try {
+                await company.addEmployee(empl);
+                dispatch(employeesActions.getEmployees());
+                dispatch(codeActions.setCode("OK"));
+            } catch (error: any) {
+                dispatch(codeActions.setCode("Authorization error"));
+            }
 
         }
     },
-    updateEmployee : (empl: Employee)=> {
+    updateEmployee: (empl: Employee) => {
         return async (dispatch: any) => {
-            await company.updateEmployee(empl);
-            const employees = await company.getAllEmployees();
-            dispatch(actions.setEmployees(employees));
+            try {
+                await company.updateEmployee(empl);
+                dispatch(employeesActions.getEmployees());
+                dispatch(codeActions.setCode("OK"));
+            } catch (error: any) {
+                dispatch(codeActions.setCode("Authorization error"));
+            }
 
         }
     },
-    removeEmployee : (id: number)=> {
+    removeEmployee: (id: number) => {
         return async (dispatch: any) => {
-            await company.removeEmployee(id);
-            const employees = await company.getAllEmployees();
-            dispatch(actions.setEmployees(employees));
+            try {
+                await company.removeEmployee(id);
+                dispatch(employeesActions.getEmployees());
+                dispatch(codeActions.setCode("OK"));
+            } catch (error: any) {
+                dispatch(codeActions.setCode("Authorization error"));
+            }
+
 
         }
     },
-    getEmployees: ()=> {
+    getEmployees: () => {
         return async (dispatch: any) => {
-            const employees = await company.getAllEmployees();
-            dispatch(actions.setEmployees(employees));
+            try {
+                const employees = await company.getAllEmployees();
+                dispatch(actions.setEmployees(employees));
+                dispatch(codeActions.setCode("OK"));
+            } catch (error: any) {
+                dispatch(codeActions.setCode("Unknown Error"));
+            }
+
         }
     },
     addBulkEmployees: (employeesAr: Employee[]) => {
         return async (dispatch: any) => {
-            employeesAr.forEach(async (empl) => await company.addEmployee(empl));
+            for(let i = 0; i < employeesAr.length; i++) {
+                try{
+                    await company.addEmployee(employeesAr[i]);
+                    dispatch(codeActions.setCode("OK"));
+                }catch(error: any) {
+                    dispatch(codeActions.setCode("Authorization error"));
+                    return;
+                } 
+            }
+               
+            
+           
             const employees = await company.getAllEmployees();
             dispatch(actions.setEmployees(employees));
         }
