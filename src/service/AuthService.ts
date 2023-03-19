@@ -1,8 +1,8 @@
 import {LoginData} from '../model/LoginData'
 export class AuthService {
     private users: LoginData[] = [
-        {username: "user@gmail.com", password: "user"},
-        {username: "admin@gmail.com", password: "admin"}
+        {username: "user@gmail.com", password: "user1975"},
+        {username: "admin@gmail.com", password: "admin1975"}
     ];
     login(loginData: LoginData) {
      

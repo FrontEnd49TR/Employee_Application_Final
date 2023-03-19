@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Box, IconButton,Alert } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { Employee } from '../../model/Employee';
@@ -14,7 +14,20 @@ export const Employees: React.FC = () => {
     const dispatch = useDispatch();
     const authUser = useSelector<any, string>(state => state.auth.authenticated);
     const editId = useRef<number>(0);
-    const columns = React.useRef<GridColDef[]>([
+    const [columns, setColumns] = useState<GridColDef[]>([]);
+    const [flEdit, setFlEdit] = useState<boolean>(false);
+    const [flAdd, setFlAdd] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const title = useRef<string>("");
+    const content = useRef<string>("");
+    const confirmFn = useRef<(isOk: boolean)=>void>((isOK)=> {});
+    const employees = useSelector<any, Employee[]>(state => state.company.employees);
+    const idRemoved = useRef<number>(0);
+    useEffect(() => {setColumns(getColumns())}, [employees]);
+    const code: CodeType = useSelector<any, CodeType>(state=>state.errorCode.code );
+    const employeeToUpdate = useRef<Employee>();
+    function getColumns(): GridColDef[] {
+       return ([
         {
             field: 'name', headerClassName: 'header', headerName: 'Employee Name',
             flex: 1, headerAlign: 'center', align: 'center'
@@ -48,16 +61,7 @@ export const Employees: React.FC = () => {
         }
 
     ])
-    const [flEdit, setFlEdit] = useState<boolean>(false);
-    const [flAdd, setFlAdd] = useState<boolean>(false);
-    const [open, setOpen] = useState<boolean>(false);
-    const title = useRef<string>("");
-    const content = useRef<string>("");
-    const confirmFn = useRef<(isOk: boolean)=>void>((isOK)=> {});
-    const employees = useSelector<any, Employee[]>(state => state.company.employees);
-    const idRemoved = useRef<number>(0);
-    const code: CodeType = useSelector<any, CodeType>(state=>state.errorCode.code );
-    const employeeToUpdate = useRef<Employee>();
+    }
     function removeEmployee(id: number) {
         title.current = "Remove Employee object?";
         const employee = employees.find(empl => empl.id == id);
@@ -80,7 +84,7 @@ export const Employees: React.FC = () => {
     }
     function getComponent(): ReactNode {
         let res: ReactNode = <Box sx={{ height: "70vh", width: "80vw" }}>
-                <DataGrid columns={columns.current} rows={employees}/>
+                <DataGrid columns={columns} rows={employees}/>
                 {authUser.includes("admin") && <IconButton onClick={() => setFlAdd(true)}><PersonAdd/></IconButton>}
         </Box>
         if (code == "Authorization error") {
